@@ -19,6 +19,7 @@
  */
 
 #include "ScriptingEnvironment.h"
+#include "../DataStructures/LuaRouteIterator.h"
 
 ScriptingEnvironment::ScriptingEnvironment() {}
 ScriptingEnvironment::ScriptingEnvironment(const char * fileName) {
@@ -52,7 +53,19 @@ ScriptingEnvironment::ScriptingEnvironment(const char * fileName) {
                                      .def("Find", &HashTable<std::string, std::string>::Find)
                                      .def("Holds", &HashTable<std::string, std::string>::Holds)
                                      ];
+                            
+                            
+         luabind::module(myLuaState) [
+                                      luabind::class_<ExtractorRoute>("ExtractorRoute")
+                                      .def_readwrite("id", &ExtractorRoute::id)
+                                      .def_readwrite("tags", &ExtractorRoute::tags)
+                                      ];
 
+         luabind::module(myLuaState) [
+                                      luabind::class_<LuaRouteIterator>("routes")
+                                      .def("Next", &LuaRouteIterator::Next)
+                                      ];
+                                      
         luabind::module(myLuaState) [
                                      luabind::class_<ImportNode>("Node")
                                      .def(luabind::constructor<>())

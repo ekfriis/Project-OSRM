@@ -89,7 +89,7 @@ function node_function (node)
 end
 
 
-function way_function (way, numberOfNodesInWay)
+function way_function (way, routes, numberOfNodesInWay)
 
   -- A way must have two nodes or more
   if(numberOfNodesInWay < 2) then

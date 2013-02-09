@@ -80,6 +80,8 @@ private:
     inline void parseDenseNode(_ThreadData * threadData);
     inline void parseNode(_ThreadData * );
     inline void parseRelation(_ThreadData * threadData);
+    inline void parseRestriction(_ThreadData* threadData, const OSMPBF::Relation& inputRelation);
+    inline void parseRoute(_ThreadData* threadData, const OSMPBF::Relation& inputRelation);
     inline void parseWay(_ThreadData * threadData);
     
     inline void loadGroup(_ThreadData * threadData);
@@ -108,6 +110,8 @@ private:
     ScriptingEnvironment scriptingEnvironment;
 
     std::vector<std::string> restriction_exceptions_vector;
+    WayToRouteMap wayToRouteMap;
+    RouteMap routeMap;
 };
 
 #endif /* PBFPARSER_H_ */
