@@ -32,8 +32,8 @@ or see http://www.gnu.org/licenses/agpl.txt.
 #include <boost/make_shared.hpp>
 #include <boost/unordered_map.hpp>
 
-#include <gdal/gdal.h>
-#include <gdal/ogrsf_frmts.h>
+#include <gdal.h>
+#include <ogrsf_frmts.h>
 
 #include "../DataStructures/DeallocatingVector.h"
 #include "../DataStructures/DynamicGraph.h"
