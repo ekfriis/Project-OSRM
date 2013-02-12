@@ -77,6 +77,7 @@ public:
 private:
     inline void ReadData();
     inline void ParseData();
+    inline void ParseStep(bool relations);
     inline void parseDenseNode(_ThreadData * threadData);
     inline void parseNode(_ThreadData * );
     inline void parseRelation(_ThreadData * threadData);
@@ -112,6 +113,7 @@ private:
     std::vector<std::string> restriction_exceptions_vector;
     WayToRouteMap wayToRouteMap;
     RouteMap routeMap;
+    bool parseStep;
 };
 
 #endif /* PBFPARSER_H_ */

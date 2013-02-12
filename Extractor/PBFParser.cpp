@@ -18,16 +18,16 @@
  or see http://www.gnu.org/licenses/agpl.txt.
  */
 
+#include <sys/time.h>
 #include "PBFParser.h"
 #include "../DataStructures/LuaRouteIterator.h"
 
-PBFParser::PBFParser(const char * fileName) : externalMemory(NULL){
+PBFParser::PBFParser(const char * fileName) : externalMemory(NULL) {
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
 	//TODO: What is the bottleneck here? Filling the queue or reading the stuff from disk?
 	//NOTE: With Lua scripting, it is parsing the stuff. I/O is virtually for free.
-	threadDataQueue = boost::make_shared<ConcurrentQueue<_ThreadData*> >( 2500 ); /* Max 2500 items in queue, hardcoded. */
 	input.open(fileName, std::ios::in | std::ios::binary);
-
+    
 	if (!input) {
 		std::cerr << fileName << ": File not found." << std::endl;
 	}
@@ -84,12 +84,18 @@ PBFParser::~PBFParser() {
 }
 
 inline bool PBFParser::Init() {
+	input.clear();    
+    input.seekg(0,std::ios_base::beg);
+    
+    threadDataQueue = boost::make_shared<ConcurrentQueue<_ThreadData*> >( 2500 ); /* Max 2500 items in queue, hardcoded. */
+	
+	
 	_ThreadData initData;
 	/** read Header */
 	if(!readPBFBlobHeader(input, &initData)) {
 		return false;
 	}
-
+    
 	if(readBlob(input, &initData)) {
 		if(!initData.PBFHeaderBlock.ParseFromArray(&(initData.charBuffer[0]), initData.charBuffer.size() ) ) {
 			std::cerr << "[error] Header not parseable!" << std::endl;
@@ -112,6 +118,7 @@ inline bool PBFParser::Init() {
 	} else {
 		std::cerr << "[error] blob not loaded!" << std::endl;
 	}
+    
 	return true;
 }
 
@@ -145,21 +152,18 @@ inline void PBFParser::ParseData() {
 		for(int i = 0, groupSize = threadData->PBFprimitiveBlock.primitivegroup_size(); i < groupSize; ++i) {
 			threadData->currentGroupID = i;
 			loadGroup(threadData);
-
-			if(threadData->entityTypeIndicator == TypeRelation)
-				parseRelation(threadData);
-		}
-
-		for(int i = 0, groupSize = threadData->PBFprimitiveBlock.primitivegroup_size(); i < groupSize; ++i) {
-			threadData->currentGroupID = i;
-			loadGroup(threadData);
-
-			if(threadData->entityTypeIndicator == TypeNode)
-				parseNode(threadData);
-			if(threadData->entityTypeIndicator == TypeWay)
-				parseWay(threadData);
-			if(threadData->entityTypeIndicator == TypeDenseNode)
-				parseDenseNode(threadData);
+            
+            if( parseStep ) {
+    			if(threadData->entityTypeIndicator == TypeRelation)
+    				parseRelation(threadData);
+	    	} else {
+	    		if(threadData->entityTypeIndicator == TypeNode)
+    				parseNode(threadData);
+    			if(threadData->entityTypeIndicator == TypeWay)
+    				parseWay(threadData);
+    			if(threadData->entityTypeIndicator == TypeDenseNode)
+    				parseDenseNode(threadData);
+    		}
 		}
 
 		delete threadData;
@@ -167,8 +171,17 @@ inline void PBFParser::ParseData() {
 	}
 }
 
-inline bool PBFParser::Parse() {
-	// Start the read and parse threads
+inline void PBFParser::ParseStep(bool step) {
+    parseStep = step;
+    
+    Init();
+    
+    #ifndef NDEBUG
+    blockCount = 0;
+    groupCount = 0;
+    #endif
+
+    // Start the read and parse threads
 	boost::thread readThread(boost::bind(&PBFParser::ReadData, this));
 
 	//Open several parse threads that are synchronized before call to
@@ -177,11 +190,25 @@ inline bool PBFParser::Parse() {
 	// Wait for the threads to finish
 	readThread.join();
 	parseThread.join();
-
-	return true;
 }
 
-inline void PBFParser::parseDenseNode(_ThreadData * threadData) {
+inline bool PBFParser::Parse() {
+    double time;
+    
+    time = get_timestamp();
+    INFO("Parsing relations...");
+	ParseStep(true);
+    INFO("Parsing relations done after " << get_timestamp() - time << " seconds");
+
+    time = get_timestamp();
+    INFO("Parsing nodes and ways...");
+    ParseStep(false);
+    INFO("Parsing nodes and ways done after " << get_timestamp() - time << " seconds");
+
+    return true;
+}
+
+inline void PBFParser::parseDenseNode(_ThreadData * threadData) {    
 	const OSMPBF::DenseNodes& dense = threadData->PBFprimitiveBlock.primitivegroup( threadData->currentGroupID ).dense();
 	int denseTagIndex = 0;
 	int m_lastDenseID = 0;

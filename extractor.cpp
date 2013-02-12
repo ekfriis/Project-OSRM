@@ -103,8 +103,8 @@ int main (int argc, char *argv[]) {
     parser->RegisterCallbacks(extractCallBacks);
     parser->RegisterScriptingEnvironment(scriptingEnvironment);
 
-    if(!parser->Init())
-        ERR("Parser not initialized!");
+    //if(!parser->Init())
+    //    ERR("Parser not initialized!");
     double time = get_timestamp();
     parser->Parse();
     INFO("parsing finished after " << get_timestamp() - time << " seconds");
