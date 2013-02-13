@@ -160,15 +160,6 @@ function way_function (way, routes, numberOfNodesInWay)
 	local service	= way.tags:Find("service")
 	local area = way.tags:Find("area")
 	local foot = way.tags:Find("foot")
-
-	-- name	
-	if "" ~= ref then
-		way.name = ref
-	elseif "" ~= name then
-		way.name = name
-	else
-		way.name = highway		-- if no name exists, use way type
-	end
 	
 	-- speed
     if route_speeds[route] then
@@ -294,6 +285,66 @@ function way_function (way, routes, numberOfNodesInWay)
 		end
 	end
 
+    -- bicycle routes
+    local factor = 1
+    local printed = false
+    local onRoute = false
+    local routeName = nil
+    local factor = 1
+    while true do
+    	local role, route = routes:Next()
+        if route==nil then
+            break
+        end
+        
+        if route.tags:Find("route")=='bicycle' then
+            network = route.tags:Find("network")
+            if network ~= 'lcn' then
+                break
+            end
+            if printed == false then
+                --print( "way id: " .. tostring(way.id) .. ", name: " .. tostring(way.tags:Find("name")) )
+                printed = true
+            end
+            network = route.tags:Find("network")
+        
+            route_name = route.tags:Find("name")
+            --print( "  route id: " .. tostring(route.id) .. "  name: " .. tostring(route_name) .. ", role: " .. role )
+            --print( "    network: " .. tostring(network) )
+
+            -- until we have separate speed/impedance, we have to use speed,
+            -- even though it will make travel times unrealistic
+            if network == "rcn" then
+                factor = 1.2
+            elseif network == "lcn" then
+                factor = 1.2
+            end
+        end
+	end
+    
+    way.speed = way.speed * factor 
+    
+    if printed then
+        --print( "    speed: " .. tostring(way.speed) )
+    end
+
+    -- name
+    if route_name then
+        way.name = route_name
+    else
+        if "" ~= ref then
+    		way.name = ref
+    	elseif "" ~= name then
+    		way.name = name
+    	else
+    	    way.name = highway		-- if no names exists, use way type
+    	end
+    end
+    
+    if printed then
+        print( tostring( way.name ) )
+    end
+    
   -- Override speed settings if explicit forward/backward maxspeeds are given
     if maxspeed_forward ~= nil and maxspeed_forward > 0 then
 	if Way.bidirectional == way.direction then

@@ -80,6 +80,7 @@ ScriptingEnvironment::ScriptingEnvironment(const char * fileName) {
         luabind::module(myLuaState) [
                                      luabind::class_<ExtractionWay>("Way")
                                      .def(luabind::constructor<>())
+                                     .def_readwrite("id", &ExtractionWay::id)
                                      .def_readwrite("name", &ExtractionWay::name)
                                      .def_readwrite("speed", &ExtractionWay::speed)
                                      .def_readwrite("backward_speed", &ExtractionWay::backward_speed)
