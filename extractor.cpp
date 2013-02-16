@@ -94,11 +94,11 @@ int main (int argc, char *argv[]) {
 
     stringMap[""] = 0;
     extractCallBacks = new ExtractorCallbacks(&externalMemory, &stringMap);
-    BaseParser<ExtractorCallbacks, _Node, _RawRestrictionContainer, ExtractionWay> * parser;
+    BaseParser* parser;
     if(isPBF) {
-        parser = new PBFParser(argv[1]);
+        parser = new PBFParser(argv[1], scriptingEnvironment);
     } else {
-        parser = new XMLParser(argv[1]);
+        parser = new XMLParser(argv[1], scriptingEnvironment);
     }
     parser->RegisterCallbacks(extractCallBacks);
     parser->RegisterScriptingEnvironment(scriptingEnvironment);

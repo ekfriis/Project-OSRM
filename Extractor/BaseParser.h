@@ -30,13 +30,15 @@ extern "C" {
 #include <boost/noncopyable.hpp>
 
 #include "ScriptingEnvironment.h"
+#include "ExtractorCallbacks.h"
 
-template<class ExternalMemoryT, typename NodeT, typename RestrictionT, typename WayT>
 class BaseParser : boost::noncopyable {
 public:
+    BaseParser(ScriptingEnvironment& se);
     virtual ~BaseParser() {}
+    virtual void ReadUseRouteRelationSetting(lua_State* luaState);
     virtual bool Init() = 0;
-    virtual void RegisterCallbacks(ExternalMemoryT * externalMemory) = 0;
+    virtual void RegisterCallbacks(ExtractorCallbacks* externalMemory) = 0;
     virtual void RegisterScriptingEnvironment(ScriptingEnvironment & _se) = 0;
     virtual bool Parse() = 0;
 
@@ -47,6 +49,8 @@ public:
         }
     }
 
+protected:
+    bool use_route_relations;
 };
 
 #endif /* BASEPARSER_H_ */

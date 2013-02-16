@@ -28,9 +28,9 @@
 #include "ExtractorCallbacks.h"
 #include "ScriptingEnvironment.h"
 
-class XMLParser : public BaseParser<ExtractorCallbacks, _Node, _RawRestrictionContainer, ExtractionWay> {
+class XMLParser : public BaseParser {
 public:
-    XMLParser(const char * filename);
+    XMLParser(const char * filename, ScriptingEnvironment& se);
     virtual ~XMLParser();
     void RegisterCallbacks(ExtractorCallbacks * em);
     void RegisterScriptingEnvironment(ScriptingEnvironment & _se);

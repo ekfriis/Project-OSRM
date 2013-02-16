@@ -22,7 +22,8 @@
 #include "PBFParser.h"
 #include "../DataStructures/LuaRouteIterator.h"
 
-PBFParser::PBFParser(const char * fileName) : externalMemory(NULL) {
+PBFParser::PBFParser(const char * fileName, ScriptingEnvironment& se) : 
+BaseParser(se), externalMemory(NULL) {
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
 	//TODO: What is the bottleneck here? Filling the queue or reading the stuff from disk?
 	//NOTE: With Lua scripting, it is parsing the stuff. I/O is virtually for free.
@@ -195,11 +196,13 @@ inline void PBFParser::ParseStep(bool step) {
 inline bool PBFParser::Parse() {
     double time;
     
-    time = get_timestamp();
-    INFO("Parsing relations...");
-	ParseStep(true);
-    INFO("Parsing relations done after " << get_timestamp() - time << " seconds");
-
+    if( use_route_relations ) {
+        time = get_timestamp();
+        INFO("Parsing relations...");
+    	ParseStep(true);
+        INFO("Parsing relations done after " << get_timestamp() - time << " seconds");
+    }
+    
     time = get_timestamp();
     INFO("Parsing nodes and ways...");
     ParseStep(false);

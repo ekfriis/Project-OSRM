@@ -27,7 +27,8 @@
 #include "../DataStructures/InputReaderFactory.h"
 
 
-XMLParser::XMLParser(const char * filename) : externalMemory(NULL), myLuaState(NULL){
+XMLParser::XMLParser(const char * filename, ScriptingEnvironment& se) : 
+BaseParser(se), externalMemory(NULL), myLuaState(NULL){
 	WARN("Parsing plain .osm/.osm.bz2 is deprecated. Switch to .pbf");
 	inputReader = inputReaderFactory(filename);
 }
