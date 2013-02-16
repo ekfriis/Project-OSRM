@@ -22,6 +22,7 @@ use_restrictions 		= true
 ignore_areas 			= true	-- future feature
 traffic_signal_penalty 	= 7		-- seconds
 u_turn_penalty 			= 20
+use_route_relations     = true
 
 function limit_speed(speed, limits)
     -- don't use ipairs(), since it stops at the first nil value

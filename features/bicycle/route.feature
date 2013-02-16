@@ -6,8 +6,8 @@ Feature: Bike -  Test route parsing
 
     Scenario: Bike - Prefer routes 
         Given the node map
-        | a |  |  | b |
-        | c |  |  | d |
+        | a |  |   |   |  | b |
+        |   |  | c | d |  |   |
 
         And the ways
         | nodes |
@@ -21,9 +21,8 @@ Feature: Bike -  Test route parsing
         | route | bicycle | Green Route | lcn     | ac,cd,db  |
 
         When I route I should get
-        | from | to | route                                                 |
-        | a    | b  | ac/Green Route/50,cd/Green Route/50,db/Green Route/50 |
-
+        | from | to | route    |
+        | a    | b  | ac,cd,db |
 
     Scenario: Bike - Prefer routes 2
         Given the node map
@@ -55,3 +54,22 @@ Feature: Bike -  Test route parsing
         | a    | f  | ab,bc,cf    |
         | i    | d  | hi,gh,dg    |
         | c    | g  | bc,be,eh,gh |
+
+    Scenario: Bike - Use route name for unnamed ways 
+        Given the node map
+        | a |  |   |   |  | b |
+        |   |  | c | d |  |   |
+
+        And the ways
+        | nodes | name  |
+        | ac    | ac    |
+        | cd    | (nil) |
+        | db    | db    |
+
+        And the relations
+        | type  | route   | name        | network | way:route |
+        | route | bicycle | Green Route | lcn     | ac,cd,db  |
+
+        When I route I should get
+        | from | to | route             |
+        | a    | b  | ac,Green Route,db |
