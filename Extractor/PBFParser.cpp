@@ -23,7 +23,7 @@
 #include "../DataStructures/LuaRouteIterator.h"
 
 PBFParser::PBFParser(const char * fileName, ScriptingEnvironment& se) : 
-BaseParser(se), externalMemory(NULL) {
+BaseParser(se), externalMemory(NULL), parsingStep(eUndefined) {
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
 	//TODO: What is the bottleneck here? Filling the queue or reading the stuff from disk?
 	//NOTE: With Lua scripting, it is parsing the stuff. I/O is virtually for free.
@@ -154,10 +154,10 @@ inline void PBFParser::ParseData() {
 			threadData->currentGroupID = i;
 			loadGroup(threadData);
             
-            if( parseStep ) {
+            if( parsingStep == eRelations ) {
     			if(threadData->entityTypeIndicator == TypeRelation)
     				parseRelation(threadData);
-	    	} else {
+	    	} else if( parsingStep == eOther ) {
 	    		if(threadData->entityTypeIndicator == TypeNode)
     				parseNode(threadData);
     			if(threadData->entityTypeIndicator == TypeWay)
@@ -172,8 +172,8 @@ inline void PBFParser::ParseData() {
 	}
 }
 
-inline void PBFParser::ParseStep(bool step) {
-    parseStep = step;
+inline void PBFParser::ParseStep(ParsingStep step) {
+    parsingStep = step;
     
     Init();
     
@@ -199,13 +199,12 @@ inline bool PBFParser::Parse() {
     if( use_route_relations ) {
         time = get_timestamp();
         INFO("Parsing relations...");
-    	ParseStep(true);
+    	ParseStep(eRelations);
         INFO("Parsing relations done after " << get_timestamp() - time << " seconds");
     }
-    
     time = get_timestamp();
     INFO("Parsing nodes and ways...");
-    ParseStep(false);
+    ParseStep(eOther);
     INFO("Parsing nodes and ways done after " << get_timestamp() - time << " seconds");
 
     return true;

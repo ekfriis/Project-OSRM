@@ -43,12 +43,18 @@
 
 class PBFParser : public BaseParser {
     
+    enum ParsingStep {
+        eUndefined,
+        eRelations,
+        eOther
+    };
+    
     enum EntityType {
         TypeNode = 1,
         TypeWay = 2,
         TypeRelation = 4,
         TypeDenseNode = 8
-    } ;
+    };
     
     struct _ThreadData {
         int currentGroupID;
@@ -77,7 +83,7 @@ public:
 private:
     inline void ReadData();
     inline void ParseData();
-    inline void ParseStep(bool relations);
+    inline void ParseStep(ParsingStep step);
     inline void parseDenseNode(_ThreadData * threadData);
     inline void parseNode(_ThreadData * );
     inline void parseRelation(_ThreadData * threadData);
@@ -113,7 +119,7 @@ private:
     std::vector<std::string> restriction_exceptions_vector;
     WayToRouteMap wayToRouteMap;
     RouteMap routeMap;
-    bool parseStep;
+    ParsingStep parsingStep;
 };
 
 #endif /* PBFPARSER_H_ */
