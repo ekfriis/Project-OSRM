@@ -1,7 +1,7 @@
 '''
 
-osrm2igraph
-==========
+Helpers for reading .osrm files
+===============================
 
 Parse OSRM binary data into igraph format.
 
@@ -16,7 +16,6 @@ https://github.com/DennisOSRM/Project-OSRM/wiki/OSRM-normalized-file-format
 import logging
 import struct
 
-import igraph
 
 _NODE_PACKING = struct.Struct('<iiIbbbb')
 _EDGE_PACKING = struct.Struct('<IIihihIbbbb')
@@ -97,6 +96,7 @@ def construct_igraph(filepath, simplify=False, remove_disconnected=False):
     note connected to the largest connected component.
 
     '''
+    import igraph
     graph = igraph.Graph()
     node_infos = unpack_nodes(filepath)
     # returns number of nodes
