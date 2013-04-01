@@ -29,13 +29,14 @@ or see http://www.gnu.org/licenses/agpl.txt.
 #include "../DataStructures/Coordinate.h"
 
 struct RouteParameters {
-    RouteParameters() : zoomLevel(18), printInstructions(false), alternateRoute(true), geometry(true), compression(true), deprecatedAPI(false), checkSum(-1) {}
+    RouteParameters() : zoomLevel(18), printInstructions(false), alternateRoute(true), geometry(true), compression(true), deprecatedAPI(false), returnRawData(false), checkSum(-1) {}
     short zoomLevel;
     bool printInstructions;
     bool alternateRoute;
     bool geometry;
     bool compression;
     bool deprecatedAPI;
+    bool returnRawData;
     unsigned checkSum;
     std::string service;
     std::string outputFormat;
@@ -93,6 +94,10 @@ struct RouteParameters {
 
     void setCompressionFlag(const bool b) {
         compression = b;
+    }
+
+    void setReturnRawDataFlag(const bool b) {
+        returnRawData = b;
     }
 
     void addCoordinate(boost::fusion::vector < double, double > arg_) {

@@ -137,6 +137,7 @@ public:
         descriptorConfig.instructions = routeParameters.printInstructions;
         descriptorConfig.geometry = routeParameters.geometry;
         descriptorConfig.encodeGeometry = routeParameters.compression;
+        descriptorConfig.returnRawData = routeParameters.returnRawData;
 
         switch(descriptorType){
         case 0:

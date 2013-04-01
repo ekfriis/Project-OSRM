@@ -97,6 +97,27 @@ public:
             reply.content += "[]";
         }
 
+        if (config.returnRawData) {
+            reply.content += ","
+                "\"raw_data\": [";
+            std::string tmpRaw;
+            unsigned nsteps = rawRoute.computedShortestPath.size();
+            for(unsigned i = 0; i < nsteps; ++i) {
+                const _PathData& pathStep = rawRoute.computedShortestPath[i];
+                if (i > 0) {
+                    reply.content += ",";
+                }
+                reply.content += "[";
+                intToString(pathStep.node, tmpRaw);
+                reply.content += tmpRaw;
+                reply.content += ",";
+                intToString(pathStep.durationOfSegment, tmpRaw);
+                reply.content += tmpRaw;
+                reply.content += "]";
+            }
+            reply.content += "]";
+        }
+
         reply.content += ","
                 "\"route_instructions\": [";
         numberOfEnteredRestrictedAreas = 0;

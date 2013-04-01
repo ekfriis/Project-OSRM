@@ -35,10 +35,11 @@ or see http://www.gnu.org/licenses/agpl.txt.
 #include "../Plugins/RawRouteData.h"
 
 struct _DescriptorConfig {
-    _DescriptorConfig() : instructions(true), geometry(true), encodeGeometry(true), z(18) {}
+    _DescriptorConfig() : instructions(true), geometry(true), encodeGeometry(true), returnRawData(true), z(18) {}
     bool instructions;
     bool geometry;
     bool encodeGeometry;
+    bool returnRawData;
     unsigned short z;
 };
 
