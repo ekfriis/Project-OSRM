@@ -130,8 +130,8 @@ def construct_igraph(filepath, simplify=False, remove_disconnected=False):
             max_nodes, max_comp_idx = max(
                 ((len(comp), idx) for idx, comp in enumerate(components))
             )
-            log.info("Found %i components.  The biggest carries %i nodes"
-                     " out of total %i nodes" %
+            log.info("Found %i components.  The biggest carries %i "
+                     " of total %i nodes",
                      len(components), max_nodes, len(graph.vs))
             # delete all but biggest component (component 0)
             vtx_to_delete = [vtxidx for vtxidx, compidx
