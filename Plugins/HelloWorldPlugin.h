@@ -28,6 +28,7 @@ public:
         content << "zoom level: " << routeParameters.zoomLevel << "\n";
         content << "checksum: " << routeParameters.checkSum << "\n";
         content << "instructions: " << (routeParameters.printInstructions ? "yes" : "no") << "\n";
+        content << "raw data: " << (routeParameters.returnRawData ? "yes" : "no") << "\n";
         content << "geometry: " << (routeParameters.geometry ? "yes" : "no") << "\n";
         content << "compression: " << (routeParameters.compression ? "yes" : "no") << "\n";
         content << "output format: " << routeParameters.outputFormat << "\n";
