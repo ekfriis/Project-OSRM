@@ -102,16 +102,28 @@ public:
                 "\"raw_data\": [";
             std::string tmpRaw;
             unsigned nsteps = rawRoute.computedShortestPath.size();
+            _Coordinate currentCoord;
             for(unsigned i = 0; i < nsteps; ++i) {
                 const _PathData& pathStep = rawRoute.computedShortestPath[i];
+                sEngine.GetCoordinatesForNodeID(pathStep.node, currentCoord);
                 if (i > 0) {
                     reply.content += ",";
                 }
                 reply.content += "[";
+                // a unique ID
                 intToString(pathStep.node, tmpRaw);
                 reply.content += tmpRaw;
+                // duration
                 reply.content += ",";
                 intToString(pathStep.durationOfSegment, tmpRaw);
+                reply.content += tmpRaw;
+                // latitude
+                reply.content += ",";
+                intToString(currentCoord.lat, tmpRaw);
+                reply.content += tmpRaw;
+                // longitude
+                reply.content += ",";
+                intToString(currentCoord.lon, tmpRaw);
                 reply.content += tmpRaw;
                 reply.content += "]";
             }
