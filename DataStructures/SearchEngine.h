@@ -126,6 +126,10 @@ public:
 		result.lon = _queryData.nodeHelpDesk->getLongitudeOfNode(id);
 	}
 
+	inline const NodeID GetOriginalNodeID(NodeID id) const {
+		return _queryData.nodeHelpDesk->getOrigViaNode(id);
+	}
+
 	inline void FindRoutingStarts(const _Coordinate & start, const _Coordinate & target, PhantomNodes & routingStarts) const {
 	    _queryData.nodeHelpDesk->FindRoutingStarts(start, target, routingStarts);
 	}

@@ -54,8 +54,10 @@ public:
 	    while(!nodesInstream.eof()) {
 			nodesInstream.read((char *)&b, sizeof(NodeInfo));
 			coordinateVector.push_back(_Coordinate(b.lat, b.lon));
+                        nodeIdVector.push_back(b.id);
 		}
 	    std::vector<_Coordinate>(coordinateVector).swap(coordinateVector);
+	    std::vector<NodeID>(nodeIdVector).swap(nodeIdVector);
 	    nodesInstream.close();
 
         DEBUG("Loading edge data");
@@ -81,6 +83,11 @@ public:
 //	void initNNGrid() {
 //	    readOnlyGrid->OpenIndexFiles();
 //	}
+
+	inline const NodeID getOrigViaNode(const unsigned id) const {
+	    const NodeID node = origEdgeData_viaNode.at(id);
+            return nodeIdVector.at(node);
+        }
 
 	inline int getLatitudeOfNode(const unsigned id) const {
 	    const NodeID node = origEdgeData_viaNode.at(id);
@@ -125,6 +132,7 @@ public:
 
 private:
 	std::vector<_Coordinate> coordinateVector;
+	std::vector<NodeID> nodeIdVector;
 	std::vector<NodeID> origEdgeData_viaNode;
 	std::vector<unsigned> origEdgeData_nameID;
 	std::vector<TurnInstruction> origEdgeData_turnInstruction;
