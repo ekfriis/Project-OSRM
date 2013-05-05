@@ -110,19 +110,19 @@ public:
                     reply.content += ",";
                 }
                 reply.content += "[";
-                // a unique ID
-                intToString(pathStep.node, tmpRaw);
+                // the OSM node ID
+                intToString(sEngine.GetOriginalNodeID(pathStep.node), tmpRaw);
                 reply.content += tmpRaw;
-                // duration
                 reply.content += ",";
+                // duration
                 intToString(pathStep.durationOfSegment, tmpRaw);
                 reply.content += tmpRaw;
-                // latitude
                 reply.content += ",";
+                // latitude
                 intToString(currentCoord.lat, tmpRaw);
                 reply.content += tmpRaw;
-                // longitude
                 reply.content += ",";
+                // longitude
                 intToString(currentCoord.lon, tmpRaw);
                 reply.content += tmpRaw;
                 reply.content += "]";
